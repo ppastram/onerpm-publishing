@@ -621,6 +621,7 @@ def main(cloud_event):
                 )
             ) * t.UsagesShare AS FLOAT64),
             TOTAL_UNITS = CAST(CEIL(t.AllocatedUsages) AS INT64)
+
         WHERE TRUE;
         """
         print("Updating GEPaymentsShare and TOTAL_UNITS")
@@ -631,21 +632,14 @@ def main(cloud_event):
         query = f"""
         UPDATE unclaimedroyalties.yt_dsr.temp_onerpm t
         SET ROYALTIES_TO_BE_PAID = 
-            (
-                (
-                SELECT SUM(AllocatedRevenue) FROM unclaimedroyalties.yt_dsr_sandbox.{abbreviated_name}_SY03 WHERE RightsController = 'ONErpm_BR_publishing'
-                ) - (
-                SELECT SUM(AllocatedAmount) FROM unclaimedroyalties.yt_dsr_sandbox.{abbreviated_name}_LI0103 WHERE RightsController = 'ONErpm_BR_publishing'
-                )
-            ) * UsagesShare AS GEPaymentsShare,
             ((
                 (
-                SELECT SUM(AllocatedRevenue) FROM unclaimedroyalties.yt_dsr_sandbox.{abbreviated_name}_SY03 WHERE RightsController = 'ONErpm_BR_publishing'
+                SELECT SUM(AllocatedRevenue) FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 WHERE RightsController = 'ONErpm_BR_publishing'
                 ) - (
-                SELECT SUM(AllocatedAmount) FROM unclaimedroyalties.yt_dsr_sandbox.{abbreviated_name}_LI0103 WHERE RightsController = 'ONErpm_BR_publishing'
+                SELECT SUM(AllocatedAmount) FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103 WHERE RightsController = 'ONErpm_BR_publishing'
                 )
-            ) * UsagesShare) + AllocatedAmount AS ROYALTIES_TO_BE_PAID
-            FROM unclaimedroyalties.yt_dsr_sandbox.temp_onerpm
+            ) * UsagesShare) + AllocatedAmount
+            FROM unclaimedroyalties.yt_dsr.temp_onerpm
         WHERE TRUE;
         """
         print("Updating ROYALTIES_TO_BE_PAID")
