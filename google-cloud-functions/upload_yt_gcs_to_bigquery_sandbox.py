@@ -631,15 +631,19 @@ def main(cloud_event):
         # Update ROYALTIES_TO_BE_PAID
         query = f"""
         UPDATE unclaimedroyalties.yt_dsr.temp_onerpm t
-        SET ROYALTIES_TO_BE_PAID = 
-            ((
+        SET
+            ROYALTIES_TO_BE_PAID = CAST((
                 (
-                SELECT SUM(AllocatedRevenue) FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 WHERE RightsController = 'ONErpm_BR_publishing'
+                    SELECT SUM(AllocatedRevenue)
+                    FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03
+                    WHERE RightsController = 'ONErpm_BR_publishing'
                 ) - (
-                SELECT SUM(AllocatedAmount) FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103 WHERE RightsController = 'ONErpm_BR_publishing'
+                    SELECT SUM(AllocatedAmount)
+                    FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103
+                    WHERE RightsController = 'ONErpm_BR_publishing'
                 )
-            ) * UsagesShare) + AllocatedAmount
-            FROM unclaimedroyalties.yt_dsr.temp_onerpm
+            ) * t.UsagesShare AS FLOAT64) + AllocatedAmount)
+
         WHERE TRUE;
         """
         print("Updating ROYALTIES_TO_BE_PAID")
