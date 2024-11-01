@@ -110,8 +110,8 @@ def main(cloud_event):
         if string_field_25_exists:
             query = f"""
             
-            -- Create table for SY05.03 records
-            CREATE TABLE unclaimedroyalties.yt_dsr.temp_SY03 AS
+            -- CREATE OR REPLACE table for SY05.03 records
+            CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_SY03 AS
             SELECT
                 string_field_1 AS SummaryRecordId,
                 string_field_2 AS DistributionChannel,
@@ -144,7 +144,7 @@ def main(cloud_event):
             WHERE
                 string_field_0 = 'SY05.03';
             
-            CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 AS
+            CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 AS
             SELECT * 
             FROM unclaimedroyalties.yt_dsr.temp_SY03
             WHERE FALSE;
@@ -160,8 +160,8 @@ def main(cloud_event):
             """           
         else:
             query = f"""
-            -- Create table for SY02.03 records
-            CREATE TABLE unclaimedroyalties.yt_dsr.temp_SY03 AS
+            -- CREATE OR REPLACE TABLE for SY02.03 records
+            CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_SY03 AS
             (SELECT
                 string_field_1 AS SummaryRecordId,
                 string_field_2 AS DistributionChannel,
@@ -191,7 +191,7 @@ def main(cloud_event):
                 string_field_0 = 'SY02.03'
             );
 
-            CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 AS
+            CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_SY03 AS
             SELECT * 
             FROM unclaimedroyalties.yt_dsr.temp_SY03
             WHERE FALSE;
@@ -211,8 +211,8 @@ def main(cloud_event):
         query_job.result()
 
         query = f""" 
-        -- Create table for HEAD records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_HEAD AS
+        -- CREATE OR REPLACE TABLE for HEAD records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_HEAD AS
         SELECT
             string_field_1 AS MessageVersion,
             string_field_2 AS Profile,
@@ -235,7 +235,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'HEAD';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_HEAD AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_HEAD AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_HEAD
         WHERE FALSE;
@@ -246,8 +246,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_HEAD;
 
 
-        -- Create table for AS01.02 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_AS0102 AS
+        -- CREATE OR REPLACE TABLE for AS01.02 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_AS0102 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS ResourceReference,
@@ -268,7 +268,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'AS01.02';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_AS0102
         WHERE FALSE;
@@ -279,13 +279,13 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_AS0102;
 
 
-        -- Create table for RU01.02 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_RU0102 AS
+        -- CREATE OR REPLACE TABLE for RU01.02 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_RU0102 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS SummaryRecordId,
             string_field_3 AS DspReleaseId,
-            string_field_4 ASUsages,
+            string_field_4 AS Usages,
             string_field_5 AS ContentCategory,
             string_field_6 AS ParentResourceReference,
             '{file_date}' AS Quarter
@@ -294,7 +294,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'RU01.02';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_RU0102 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_RU0102 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_RU0102
         WHERE FALSE;
@@ -305,8 +305,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_RU0102;
 
 
-        -- Create table for SU03.02 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_SU0302 AS
+        -- CREATE OR REPLACE TABLE for SU03.02 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_SU0302 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS SalesTransactionId,
@@ -315,7 +315,7 @@ def main(cloud_event):
             CAST(string_field_5 AS FLOAT64) AS Usages,
             CAST(string_field_6 AS FLOAT64) AS NetRevenue,
             string_field_7 AS ValidityPeriodStart,
-            string_field_8 AS ValidityPeriodEnd,
+            string_field_8 AS DATE_SALE,
             string_field_9 AS ContentCategory,
             string_field_10 AS IsRoyaltyBearing,
             '{file_date}' AS Quarter
@@ -324,7 +324,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'SU03.02';
 
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_SU0302
         WHERE FALSE;
@@ -335,14 +335,14 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_SU0302;
 
 
-        -- Create table for LI01.03 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_LI0103 AS
+        -- CREATE OR REPLACE TABLE for LI01.03 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_LI0103 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS SummaryRecordId,
             string_field_3 AS RightsController,
             string_field_4 AS RightsControllerPartyId,
-            string_field_5 AS RightsControllerWorkId,
+            string_field_5 AS PUBLISHERS_SONGCODE,
             CAST(string_field_6 AS FLOAT64) AS RightSharePercent,
             string_field_7 AS RightsType,
             CAST(string_field_8 AS FLOAT64) AS AllocatedNetRevenue,
@@ -356,7 +356,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'LI01.03';
 
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_LI0103
         WHERE FALSE;
@@ -367,8 +367,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_LI0103;
 
 
-        -- Create table for MW01.02 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_MW0102 AS
+        -- CREATE OR REPLACE TABLE for MW01.02 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_MW0102 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS DspMusicalWorkId,
@@ -395,7 +395,7 @@ def main(cloud_event):
             string_field_0 = 'MW01.02';
 
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_MW0102 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_MW0102 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_MW0102
         WHERE FALSE;
@@ -406,8 +406,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_MW0102;
 
         
-            -- Create table for LC01 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_LC01 AS
+        -- CREATE OR REPLACE TABLE for LC01 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_LC01 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS ResourceReference,
@@ -437,7 +437,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'LC01';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_LC01 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_LC01 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_LC01
         WHERE FALSE;
@@ -448,8 +448,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_LC01;
         
         
-        -- Create table for SY04.02 records -- this one applies for Subscription Only
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_SY0402 AS
+        -- CREATE OR REPLACE TABLE for SY04.02 records -- this one applies for Subscription Only
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_SY0402 AS
         SELECT
             string_field_1 AS SummaryRecordId,
             string_field_2 AS DistributionChannel,
@@ -476,7 +476,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'SY04.02';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_SY0402 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_SY0402 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_SY0402
         WHERE FALSE;
@@ -487,8 +487,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_SY0402;
 
         
-        -- Create table for SY09.01 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_SY0901 AS
+        -- CREATE OR REPLACE TABLE for SY09.01 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_SY0901 AS
         SELECT
             string_field_1 AS SummaryRecordId,
             string_field_2 AS CommercialModel,
@@ -517,7 +517,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'SY09.01';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_SY0901 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_SY0901 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_SY0901
         WHERE FALSE;
@@ -528,8 +528,8 @@ def main(cloud_event):
         DROP TABLE unclaimedroyalties.yt_dsr.temp_SY0901;
         
 
-         -- Create table for ST01 records
-        CREATE TABLE unclaimedroyalties.yt_dsr.temp_ST01 AS
+        -- CREATE OR REPLACE TABLE for ST01 records
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_ST01 AS
         SELECT
             string_field_1 AS BlockId,
             string_field_2 AS ParentSalesTransactionId,
@@ -541,7 +541,7 @@ def main(cloud_event):
         WHERE
             string_field_0 = 'ST01';
         
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.yt_dsr.{abbreviated_name}_ST01 AS
+        CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.{abbreviated_name}_ST01 AS
         SELECT * 
         FROM unclaimedroyalties.yt_dsr.temp_ST01
         WHERE FALSE;
@@ -550,16 +550,19 @@ def main(cloud_event):
         SELECT * FROM unclaimedroyalties.yt_dsr.temp_ST01;
 
         DROP TABLE unclaimedroyalties.yt_dsr.temp_ST01;
-
         """
         print("Creating intermediate tables")
         query_job = client.query(query)
         query_job.result()
 
-
-        # Initial temp_onerpm table creation
         query = f"""
         CREATE OR REPLACE TABLE unclaimedroyalties.yt_dsr.temp_onerpm AS
+        WITH filtered_li AS (
+            SELECT *
+            FROM `unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103`
+            WHERE RightsController = 'ONErpm_BR_publishing'
+            AND RightsType = 'MechanicalRight'
+        )
         SELECT
             a.BlockId,
             a.ResourceISRC,
@@ -569,37 +572,33 @@ def main(cloud_event):
             s.Usages,
             s.NetRevenue,
             s.ValidityPeriodStart,
-            s.ValidityPeriodEnd,
+            s.DATE_SALE,
             l.RightsController,
-            l.RightsControllerWorkId,
+            l.PUBLISHERS_SONGCODE,
             l.RightSharePercent,
             l.AllocatedNetRevenue,
             l.AllocatedAmount,
             l.AllocatedUsages,
-            SAFE_DIVIDE(CAST(l.AllocatedUsages AS FLOAT64), 
-                NULLIF((
-                    SELECT SUM(AllocatedUsages) 
-                    FROM `unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103` 
-                    WHERE RightsController = 'ONErpm_BR_publishing'
-                ), 0)
+            l.AllocatedUsages / (
+                SELECT SUM(AllocatedUsages) 
+                FROM `unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103` 
+                WHERE RightsController = 'ONErpm_BR_publishing'
+                AND RightsType = 'MechanicalRight'  -- Added this to match the filter
             ) AS UsagesShare,
             'YOUTUBE' AS PAYEE,
-            CONCAT('YOUTUBE ', ' ', UPPER('{abbreviated_name}'), ' ', '{quarter}', ' ', '{year}') AS Distribution_Description,
+            CONCAT('YOUTUBE ', '{abbreviated_name.upper()}', ' ', CAST(a.Quarter AS STRING), ' ', '{year}') AS Distribution_Description,
             'youtube_comp' AS STORE_ID,
             '{name[-2:]}' AS COUNTRY_OF_SALE,
             'USD' AS CURRENCY,
             CAST(NULL AS FLOAT64) AS GEPaymentsShare,
             CAST(NULL AS FLOAT64) AS ROYALTIES_TO_BE_PAID,
             CAST(0 AS INT64) AS TOTAL_UNITS
-        FROM `unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102` as a
-        JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302` as s 
-            ON a.BlockId = s.BlockId AND a.Quarter = s.Quarter 
-        JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103` as l 
-            ON a.BlockId = l.BlockId 
-            AND a.Quarter = l.Quarter 
+        FROM filtered_li AS l
+        JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102` AS a 
+            ON l.BlockId = a.BlockId
+        JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302` AS s
+            ON l.BlockId = s.BlockId
             AND l.ParentSalesTransactionId = s.SalesTransactionId
-        WHERE l.RightsType = 'MechanicalRight'
-            AND l.RightsController = 'ONErpm_BR_publishing';
         """
         print("Creating initial temp_onerpm table")
         query_job = client.query(query)
@@ -642,7 +641,7 @@ def main(cloud_event):
                     FROM unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103
                     WHERE RightsController = 'ONErpm_BR_publishing'
                 )
-            ) * t.UsagesShare AS FLOAT64) + AllocatedAmount)
+            ) * t.UsagesShare AS FLOAT64) + AllocatedAmount
 
         WHERE TRUE;
         """
@@ -652,12 +651,6 @@ def main(cloud_event):
 
         # Rename columns and handle special cases
         query = f"""
-        ALTER TABLE unclaimedroyalties.yt_dsr.temp_onerpm
-        RENAME COLUMN ValidityPeriodEnd TO DATE_SALE;
-
-        ALTER TABLE unclaimedroyalties.yt_dsr.temp_onerpm
-        RENAME COLUMN RightsControllerWorkId TO PUBLISHERS_SONGCODE;
-
         UPDATE unclaimedroyalties.yt_dsr.temp_onerpm 
         SET PUBLISHERS_SONGCODE = REPLACE(PUBLISHERS_SONGCODE, 'C_', '')
         WHERE PUBLISHERS_SONGCODE LIKE 'C_%';
@@ -672,15 +665,13 @@ def main(cloud_event):
         query_job = client.query(query)
         query_job.result()
 
-        # Get the year and quarter from the file_date
         year = file_date.split("_")[0]
         quarter = f"{file_date.split('_')[1]}"
         period = f"{year}{quarter}"
 
-
         # Create and populate the final report table
         query = f"""
-        CREATE TABLE IF NOT EXISTS unclaimedroyalties.onerpm.yt_{abbreviated_name}_report (
+        CREATE OR REPLACE TABLE unclaimedroyalties.onerpm.yt_{abbreviated_name}_report (
             BlockId STRING,
             ISRC STRING,
             SONG_TITLE STRING,
@@ -707,25 +698,20 @@ def main(cloud_event):
             TOTAL_UNITS INT64
         );
 
-        INSERT INTO unclaimedroyalties.onerpm.yt_{abbreviated_name}_report
+        CREATE OR REPLACE TABLE `unclaimedroyalties.onerpm.yt_{abbreviated_name}_report` AS
         SELECT * FROM unclaimedroyalties.yt_dsr.temp_onerpm;
 
-        CREATE OR REPLACE TABLE `unclaimedroyalties.yt_dsr_tables.yt_ads_report_{period}` AS
-        SELECT *
-        FROM `unclaimedroyalties.onerpm.yt_{abbreviated_name}_report`;
+        CREATE OR REPLACE TABLE `unclaimedroyalties.yt_dsr_tables.yt_{abbreviated_name}_report_{period}` AS
+        SELECT * FROM unclaimedroyalties.yt_dsr.temp_onerpm;
         """
         print("Creating and populating final report table + historical table (inside yt_dsr_tables)")
         query_job = client.query(query)
         query_job.result()
 
-
-        # Clean up
         query = "DROP TABLE unclaimedroyalties.yt_dsr.temp_onerpm;"
         print("Dropping temporary table")
         query_job = client.query(query)
         query_job.result()
-
-                
 
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket)
@@ -843,9 +829,9 @@ def main(cloud_event):
                 Usages,
                 NetRevenue,
                 a.Quarter
-            FROM `unclaimedroyalties.yt_dsr.hardware_AS0102` as a
-            JOIN `unclaimedroyalties.yt_dsr.hardware_SU0302` as s on a.BlockId = s.BlockId AND a.Quarter = s.Quarter
-            JOIN `unclaimedroyalties.yt_dsr.hardware_LI0103` as l on a.BlockId = l.BlockId AND a.Quarter = l.Quarter AND l.ParentSalesTransactionId = s.SalesTransactionId
+            FROM `unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102` as a
+            JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302` as s on a.BlockId = s.BlockId AND a.Quarter = s.Quarter
+            JOIN `unclaimedroyalties.yt_dsr.{abbreviated_name}_LI0103` as l on a.BlockId = l.BlockId AND a.Quarter = l.Quarter AND l.ParentSalesTransactionId = s.SalesTransactionId
             WHERE l.RightsType = 'MechanicalRight'
         ) AS merged_data
         GROUP BY ResourceType, ResourceDisplayArtistName, BlockId, ResourceISRC, ResourceTitle, ResourceSubTitle, SalesTransactionId, RightsController, RightSharePercent;
