@@ -578,7 +578,7 @@ def main(cloud_event):
             AND RightsType = 'MechanicalRight'
         )
         SELECT
-            a.BlockId,
+            l.BlockId,
             a.ResourceISRC,
             a.ResourceTitle,
             a.ResourceDisplayArtistName,
@@ -600,22 +600,41 @@ def main(cloud_event):
                 AND RightsType = 'MechanicalRight'
             ) AS UsagesShare,
             'YOUTUBE' AS PAYEE,
-            CONCAT('YOUTUBE ', UPPER('{abbreviated_name}'), ' ', CAST(a.Quarter AS STRING), ' ', '{year}') AS Distribution_Description,
+            CONCAT('YOUTUBE ', UPPER('{abbreviated_name}'), ' ', CAST(a.Quarter AS STRING)) AS Distribution_Description,
             'youtube_comp' AS STORE_ID,
-            '{name[-2:]}' AS COUNTRY_OF_SALE,
+            SPLIT(l.ParentSalesTransactionId, ':')[OFFSET(1)] AS COUNTRY_OF_SALE,
             'USD' AS CURRENCY,
             CAST(NULL AS FLOAT64) AS GEPaymentsShare,
             CAST(NULL AS FLOAT64) AS ROYALTIES_TO_BE_PAID,
             CAST(0 AS INT64) AS TOTAL_UNITS
         FROM filtered_li AS l
         JOIN unclaimedroyalties.yt_dsr.{abbreviated_name}_SU0302 AS s
-            ON l.ParentSalesTransactionId = s.SalesTransactionId
-            AND l.BlockId = s.BlockId
+            ON l.BlockId = s.BlockId
+            AND l.ParentSalesTransactionId = s.SalesTransactionId
             AND l.Quarter = s.Quarter
         JOIN unclaimedroyalties.yt_dsr.{abbreviated_name}_AS0102 AS a
-            ON s.BlockId = a.BlockId
+            ON l.BlockId = a.BlockId
+            AND s.BlockId = a.BlockId
+            AND l.ParentSalesTransactionId = s.SalesTransactionId
             AND s.DspResourceId = a.DspResourceId
-            AND s.Quarter = a.Quarter;
+            AND s.Quarter = a.Quarter
+        GROUP BY   
+            l.BlockId,
+            a.ResourceISRC,
+            a.ResourceTitle,
+            a.ResourceDisplayArtistName,
+            a.Quarter,
+            s.Usages,
+            s.NetRevenue,
+            s.ValidityPeriodStart,
+            s.DATE_SALE,
+            l.RightsController,
+            l.PUBLISHERS_SONGCODE,
+            l.RightSharePercent,
+            l.AllocatedNetRevenue,
+            l.AllocatedAmount,
+            SPLIT(l.ParentSalesTransactionId, ':')[OFFSET(1)],
+            l.AllocatedUsages;
         """
         print("Creating initial temp_onerpm table")
         query_job = client.query(query)
